@@ -51,7 +51,8 @@
                             </div>
                             <div class="level-right">
                                 <div class="level-item">
-                                    <a @click.prevent="files.splice(index, 1)" class="delete"></a>
+                                    <a @click.prevent="files.splice(index, 1);
+uploadFiles.splice(index, 1)" class="delete"></a>
                                 </div>
                             </div>
                         </div>
@@ -70,13 +71,15 @@
 </template>
 
 <script>
-    // import axios from 'axios';
-import _ from 'lodash'
+    import axios from 'axios';
+    import _ from 'lodash'
+
     export default {
         name: "SimpleUpload",
         data() {
             return {
                 files: [],
+                uploadFiles: [],
                 message: '',
                 error: false
             }
@@ -89,32 +92,49 @@ import _ from 'lodash'
         methods: {
             selectFile() {
                 const files = this.$refs.files.files;
-                // this.files = [...this.files, ...files];
+                this.uploadFiles = [...this.uploadFiles, ...files];
                 this.files = [
                     ...this.files,
-                    ..._.map(files, file =>({
-                        name:file.name,
-                        size:file.size,
-                        type:file.type,
-                        invalidMessage:this.validate(file)
+                    ..._.map(files, file => ({
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        invalidMessage: this.validate(file)
                     }))
                 ]
 
             },
 
-validate(file){
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    const MAX_SIZE = 200000;
+            validate(file) {
+                const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+                const MAX_SIZE = 200000;
 
-    if(file.size > MAX_SIZE){
-        return `Max size:${MAX_SIZE/1000}kb`;
-    }
-    if(!allowedTypes.includes(file.type)){
-        return "Not an image";
-    }
-  return "";
-},
+                if (file.size > MAX_SIZE) {
+                    return `Max size:${MAX_SIZE / 1000}kb`;
+
+                }
+                if (!allowedTypes.includes(file.type)) {
+                    return "file is not image";
+                }
+                return "";
+            },
             async sendFile() {
+                const formData = new FormData();
+                _.forEach(this.uploadFiles, file => {
+                    if (this.validate(file) === "") {
+                        formData.append('files', file);
+                    }
+                });
+                try {
+                    await axios.post('/api/multiUpload', formData)
+                    this.message = "Files has been uploaded";
+                    this.files = [];
+                    this.uploadFiles = [];
+
+                } catch (err) {
+                    this.message = err.response.data.error;
+                    this.error = true;
+                }
 
             },
 

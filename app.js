@@ -8,6 +8,7 @@ const indexRouter = require('./api/routes/index');
 const usersRouter = require('./api/routes/users');
 const profileRouter = require('./api/routes/profile');
 const uploadRouter = require('./api/routes/uploader');
+const multiRouter = require('./api/routes/multiUpload');
 
 
 //middleware
@@ -26,6 +27,7 @@ app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/profile', profileRouter);
 app.use('/api/uploader', uploadRouter);
+app.use('/api/multiUpload', multiRouter);
 
 app.use(function (err, req, res, next) {
   if(err.code === "LIMIT_FILE_TYPES"){
