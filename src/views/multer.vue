@@ -10,6 +10,8 @@
                 </div>
             </div>
 
+            <DropZone/>
+
         </div>
     </div>
 </template>
@@ -17,11 +19,13 @@
 <script>
     import simpleUpload from "../components/simpleUpload";
     import multipleUpload from "../components/multipleUpload"
+    import DropZone from "../components/DropZone"
 
     export default {
         components: {
             simpleUpload,
-            multipleUpload
+            multipleUpload,
+            DropZone
         }
 
     }

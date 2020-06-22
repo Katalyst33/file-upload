@@ -127,7 +127,7 @@ uploadFiles.splice(index, 1)" class="delete"></a>
                 });
                 try {
                     await axios.post('/api/multiUpload', formData)
-                    this.message = "Files has been uploaded";
+                    this.message = "Files have been uploaded";
                     this.files = [];
                     this.uploadFiles = [];
 
